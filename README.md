@@ -242,7 +242,11 @@ Each question now has **(1) Question Details** and **(2) Expected Discussion** w
 
 ---
 
-# **🔵 20 Important LLD Interview Questions (with Full Required Structure)**
+Below is the **enhanced version** of all **20 LLD questions**, now including a **new bullet point for SOLID Principles** inside *Expected Discussion* for every question.
+
+---
+
+# **🔵 20 Important LLD Interview Questions (Including SOLID Principles)**
 
 ---
 
@@ -250,18 +254,25 @@ Each question now has **(1) Question Details** and **(2) Expected Discussion** w
 
 ### **Question Details:**
 
-Design a system to manage a multi-floor parking lot that supports cars, bikes, trucks.
+Design a scalable multi-floor parking lot system.
 
 ### **Expected Discussion:**
 
 * **Entities:** ParkingLot, Floor, Slot, Ticket, Vehicle, Payment.
-* **Design Pattern:** Factory (vehicle), Strategy (pricing), Singleton (lot manager).
-* **OOPS:** Inheritance (Car/Bike → Vehicle), abstraction for ParkingStrategy, composition for Floors→Slots.
-* **Data Flow:** Vehicle entry → Slot allocation → Ticket → Exit → Payment.
-* **DB:** Tables for Slot, Floor, VehicleType, Ticket.
-* **Class/Interface Names:** Vehicle, Slot, IPricingStrategy, TicketService, PaymentService.
-* **Association:** Floor *has-many* Slots; Ticket *has-one* Vehicle; ParkingLot *aggregation* of Floors.
-* **Trade-offs:** Nearest-slot vs random-slot allocation; slot scan complexity vs memory usage.
+* **Design Pattern:** Factory (Vehicle), Strategy (Pricing), Singleton (Lot Manager).
+* **OOPS:** Inheritance (Car/Bike→Vehicle), abstraction for slot allocation, composition (Floor→Slots).
+* **SOLID:**
+
+  * **S:** Slot class handles only slot logic; Pricing separate.
+  * **O:** Adding new Vehicle types without modifying existing code.
+  * **L:** Car/Bike replace Vehicle without breaking logic.
+  * **I:** Separate interfaces for pricing, allocation.
+  * **D:** Depend on abstractions like IPricingStrategy.
+* **Data Flow:** Entry → Allocate slot → Issue ticket → Exit → Payment.
+* **DB:** VehicleType, Slot, Floor, Ticket.
+* **Class & Interfaces:** Vehicle, Slot, IPricingStrategy, ParkingManager.
+* **Association:** ParkingLot *has-many* Floors; Floor *has-many* Slots.
+* **Trade-offs:** Nearest-slot allocation vs random; memory vs speed.
 
 ---
 
@@ -269,18 +280,25 @@ Design a system to manage a multi-floor parking lot that supports cars, bikes, t
 
 ### **Question Details:**
 
-Design the controller logic for elevators that serve multiple floors.
+Design multi-elevator management.
 
 ### **Expected Discussion:**
 
-* **Entities:** ElevatorCar, ElevatorController, Door, Request, Panel.
+* **Entities:** ElevatorCar, Controller, Request, Door, Panel.
 * **Design Pattern:** State, Observer.
-* **OOPS:** State-machine for elevator motion, encapsulation of request queue.
-* **Data Flow:** User request → Controller assigns elevator → State transitions (Idle→Move→Stop).
-* **DB:** Not mandatory.
-* **Class/Interface:** IElevatorState, MoveUpState, IdleState, ElevatorCar.
-* **Association:** Controller *has-many* ElevatorCars; Car *has-one* State.
-* **Trade-offs:** Simple vs optimized scheduling; fewer elevators vs more wait time.
+* **OOPS:** State machine for movement, encapsulation of queues.
+* **SOLID:**
+
+  * **S:** ElevatorCar only moves; Controller schedules.
+  * **O:** Add new scheduling algorithms easily.
+  * **L:** All state classes behave like IElevatorState.
+  * **I:** Separate interfaces for movement/state.
+  * **D:** Controller depends on IElevatorStrategy.
+* **Data Flow:** Request → Scheduler → Elevator → State transitions.
+* **DB:** Not required.
+* **Class/Interface:** IElevatorState, IdleState, MoveUpState.
+* **Association:** Controller *has-many* Elevators.
+* **Trade-offs:** Simple FCFS vs smart scheduling.
 
 ---
 
@@ -288,37 +306,51 @@ Design the controller logic for elevators that serve multiple floors.
 
 ### **Question Details:**
 
-Design book issuing & returning management for a library.
+Design issue/return operations.
 
 ### **Expected Discussion:**
 
-* **Entities:** Book, User, Librarian, Catalog, Transaction.
-* **Design Pattern:** Singleton (catalog), Factory (user types).
-* **OOPS:** Inheritance for User types; polymorphism for search.
-* **Data Flow:** Search → Issue → Return → Fine calculation.
+* **Entities:** Book, User, Catalog, Transaction.
+* **Design Pattern:** Singleton (Catalog), Factory (User).
+* **OOPS:** Inheritance for User types, polymorphic search.
+* **SOLID:**
+
+  * **S:** Book handles book-only logic.
+  * **O:** Add new search criteria without modifying existing.
+  * **L:** BookItem must substitute Book.
+  * **I:** Search interfaces separated.
+  * **D:** Services rely on abstractions.
+* **Data Flow:** Search → Issue → Return → Update availability.
 * **DB:** Books, Users, Transactions.
-* **Class/Interface:** ISearchable, BookItem, Catalog, TransactionService.
-* **Association:** User *has-many* Transactions; Catalog *has-many* Books.
-* **Trade-offs:** Real-time update vs cached catalog queries.
+* **Class/Interface:** Catalog, TransactionService.
+* **Association:** User *has-many* Transactions.
+* **Trade-offs:** Cached vs real-time inventory.
 
 ---
 
-# **4. Notification Service (Email/SMS/Push)**
+# **4. Notification Service**
 
 ### **Question Details:**
 
-Design a unified service that sends notifications across multiple channels.
+Design system to send Email/SMS/Push notifications.
 
 ### **Expected Discussion:**
 
-* **Entities:** Notification, Message, Channel, Template.
-* **Design Pattern:** Strategy (channel), Factory (message), Builder (template).
-* **OOPS:** Polymorphism (channel implementations).
-* **Data Flow:** Create message → Format → Choose channel → Send.
-* **DB:** Logs, Templates, User Preferences.
-* **Class/Interface:** INotificationChannel, EmailChannel, SmsChannel.
-* **Association:** Notification *uses* Channel (composition).
-* **Trade-offs:** Sync send vs async queue system.
+* **Entities:** Notification, Template, Channel, Message.
+* **Design Pattern:** Strategy (channels), Builder (message).
+* **OOPS:** Channel polymorphism.
+* **SOLID:**
+
+  * **S:** Each channel class only sends via one medium.
+  * **O:** Add WhatsApp channel easily.
+  * **L:** All channels behave like INotificationChannel.
+  * **I:** Separate interface per channel.
+  * **D:** NotificationService depends on channel abstractions.
+* **Data Flow:** Create message → Format → Send → Log.
+* **DB:** Logs, Templates, Preferences.
+* **Class/Interface:** INotificationChannel, EmailChannel.
+* **Association:** Notification uses Channel.
+* **Trade-offs:** Sync vs async.
 
 ---
 
@@ -326,18 +358,25 @@ Design a unified service that sends notifications across multiple channels.
 
 ### **Question Details:**
 
-Design a machine that dispenses coffee with ingredient management.
+Design beverage preparation machine.
 
 ### **Expected Discussion:**
 
-* **Entities:** Drink, Ingredient, Machine, State, Order.
-* **Design Pattern:** Factory (drink), State.
-* **OOPS:** Encapsulation of ingredient store; abstraction for drink.
-* **Data Flow:** Order received → Check inventory → Prepare → Dispense.
-* **DB:** Optional inventory system.
-* **Class/Interface:** IDrink, Coffee, MachineState, IdleState, ProcessingState.
+* **Entities:** Drink, Ingredient, MachineState, Order.
+* **Design Pattern:** State, Factory.
+* **OOPS:** Encapsulation for recipe logic.
+* **SOLID:**
+
+  * **S:** Each state handles only its own transitions.
+  * **O:** Add new drinks easily.
+  * **L:** All Drink subclasses behave consistently.
+  * **I:** Separate interfaces for drink preparation.
+  * **D:** Machine depends on IDrink.
+* **Data Flow:** Order → Check → Mix → Dispense.
+* **DB:** Optional inventory.
+* **Class/Interface:** IDrink, Coffee, IdleState.
 * **Association:** Drink *has-many* Ingredients.
-* **Trade-offs:** Flexible drinks vs fixed recipes.
+* **Trade-offs:** Dynamic recipe vs fixed.
 
 ---
 
@@ -345,18 +384,25 @@ Design a machine that dispenses coffee with ingredient management.
 
 ### **Question Details:**
 
-Design a 3x3 game with player switching and win detection.
+Design a simple 3x3 game.
 
 ### **Expected Discussion:**
 
-* **Entities:** Board, Player, Cell, Move, Game.
-* **Design Pattern:** Strategy (AI Player).
-* **OOPS:** Encapsulation of board state, polymorphism for players.
-* **Data Flow:** Player move → Validate → Update board → Check win.
+* **Entities:** Board, Cell, Player, Move, Game.
+* **Design Pattern:** Strategy (AI).
+* **OOPS:** Encapsulation of board.
+* **SOLID:**
+
+  * **S:** Board manages grid; Game manages turns.
+  * **O:** Support NxN boards.
+  * **L:** AIPlayer should behave like Player.
+  * **I:** Separate interface for AI vs Human.
+  * **D:** Game depends on IPlayer.
+* **Data Flow:** Move → Validate → Update → Check win.
 * **DB:** Not needed.
-* **Class/Interface:** IPlayer, HumanPlayer, AIPlayer, Game.
-* **Association:** Game *has* Board; Board *has-many* Cells.
-* **Trade-offs:** Simple array vs object-based board.
+* **Class/Interface:** IPlayer, Game, Board.
+* **Association:** Board has Cells.
+* **Trade-offs:** Array vs object grid.
 
 ---
 
@@ -364,37 +410,51 @@ Design a 3x3 game with player switching and win detection.
 
 ### **Question Details:**
 
-Design system for ticket booking with seat lock.
+Design seat selection & booking.
 
 ### **Expected Discussion:**
 
 * **Entities:** Movie, Show, Seat, Booking, Payment.
-* **Design Pattern:** Observer (seat status), Factory (payment).
-* **OOPS:** Encapsulation of seat lock logic.
-* **Data Flow:** Search → Choose seat → Lock seat → Pay → Confirm.
+* **Design Pattern:** Observer, Factory.
+* **OOPS:** Encapsulation of seat availability.
+* **SOLID:**
+
+  * **S:** SeatLockService only locks seats.
+  * **O:** Add new payment modes.
+  * **L:** Seat types must work like base Seat.
+  * **I:** ISeat, IPayment separated.
+  * **D:** BookingService depends on abstract Payment.
+* **Data Flow:** Seat lock → Payment → Confirm.
 * **DB:** Shows, Seats, Bookings.
 * **Class/Interface:** SeatLockService, BookingService.
-* **Association:** Show *has-many* Seats; Booking *has-one* Seat.
-* **Trade-offs:** Pessimistic vs optimistic seat locking.
+* **Association:** Show has Seats.
+* **Trade-offs:** Lock duration vs fairness.
 
 ---
 
-# **8. Splitwise Expense Sharing**
+# **8. Splitwise**
 
 ### **Question Details:**
 
-Design group-based expense splitting.
+Design group expense sharing.
 
 ### **Expected Discussion:**
 
-* **Entities:** User, Group, Expense, BalanceSheet.
-* **Design Pattern:** Strategy (split type).
-* **OOPS:** Polymorphism for split rules.
-* **Data Flow:** Add expense → Apply split → Update balances.
-* **DB:** Users, Groups, Expenses.
-* **Class/Interface:** ISplitStrategy, EqualSplitStrategy.
-* **Association:** Group *has-many* Users; Expense *has-many* Splits.
-* **Trade-offs:** Recompute balances vs store balance snapshot.
+* **Entities:** User, Group, Expense, Split.
+* **Design Pattern:** Strategy (Equal/Percent).
+* **OOPS:** Polymorphism for splitting.
+* **SOLID:**
+
+  * **S:** Each split strategy has its own class.
+  * **O:** Add new split types easily.
+  * **L:** EqualSplitStrategy behaves like ISplitStrategy.
+  * **I:** Different strategies implement minimal interfaces.
+  * **D:** ExpenseService depends on ISplitStrategy.
+* **Data Flow:** Expense → Strategy → Balances.
+* **DB:** Groups, Expenses, Splits.
+* **Class/Interface:** ISplitStrategy, ExpenseService.
+* **Association:** Group has Users.
+* **Trade-offs:** Recompute vs store balances.
 
 ---
 
@@ -402,18 +462,25 @@ Design group-based expense splitting.
 
 ### **Question Details:**
 
-Design a tiny URL system.
+Generate short URLs & redirect.
 
 ### **Expected Discussion:**
 
-* **Entities:** URL, Redirect, Analytics.
-* **Design Pattern:** Singleton (ID generator), Cache.
-* **OOPS:** Encapsulate hashing logic.
-* **Data Flow:** Long URL → Generate ID → Store → Redirect.
-* **DB:** URLs, Clicks.
-* **Class/Interface:** UrlService, IdGenerator.
-* **Association:** URL *has-many* Redirect events.
-* **Trade-offs:** Hash collision probability vs storage size.
+* **Entities:** UrlMapping, ClickEvent.
+* **Design Pattern:** Singleton (ID generator).
+* **OOPS:** Encapsulation of hashing logic.
+* **SOLID:**
+
+  * **S:** Hashing vs storage separated.
+  * **O:** Add custom domains without modifying base code.
+  * **L:** Any ID generator must work like IIdGenerator.
+  * **I:** Separate repository and generator interfaces.
+  * **D:** Service depends on abstractions.
+* **Data Flow:** Encode → Store → Redirect.
+* **DB:** URL table.
+* **Class/Interface:** UrlService, IIdGenerator.
+* **Association:** Url *has-many* clicks.
+* **Trade-offs:** Hash collision vs speed.
 
 ---
 
@@ -421,37 +488,51 @@ Design a tiny URL system.
 
 ### **Question Details:**
 
-Build per-user rate-limiting (token bucket).
+Design per-user request limiting.
 
 ### **Expected Discussion:**
 
-* **Entities:** TokenBucket, RateLimiter, Request.
-* **Design Pattern:** Strategy (different algorithms).
-* **OOPS:** Interface for limiter implementations.
-* **Data Flow:** Request → Check → Consume token → Allow/Deny.
-* **DB:** Optional for distributed rate limiting.
+* **Entities:** RateLimiter, TokenBucket.
+* **Design Pattern:** Strategy (limiter).
+* **OOPS:** Polymorphism for limiter types.
+* **SOLID:**
+
+  * **S:** Each algorithm has separate class.
+  * **O:** Add new algorithms easily.
+  * **L:** TokenBucketLimiter replaces IRateLimiter.
+  * **I:** Minimal IRateLimiter interface.
+  * **D:** High-level code depends on limiter abstraction.
+* **Data Flow:** Request → Check → Allow/Deny.
+* **DB:** For distributed system.
 * **Class/Interface:** IRateLimiter, TokenBucketLimiter.
-* **Association:** User *has-one* TokenBucket.
+* **Association:** User ↔ TokenBucket.
 * **Trade-offs:** Memory vs accuracy.
 
 ---
 
-# **11. File Storage System (Google Drive)**
+# **11. File Storage System**
 
 ### **Question Details:**
 
-Design folders, files, sharing, versioning.
+Design folders, files, permissions.
 
 ### **Expected Discussion:**
 
-* **Entities:** File, Folder, User, Permission, Version.
-* **Design Pattern:** Composite (folder structure), Prototype.
-* **OOPS:** Encapsulation for metadata.
-* **Data Flow:** Create → Upload → Share → Version update.
-* **DB:** Files, Folders, Permissions.
-* **Class/Interface:** Node, FileNode, FolderNode.
-* **Association:** Folder *contains* Files & Folders.
-* **Trade-offs:** Storing full version vs diffs.
+* **Entities:** FileNode, FolderNode, Version, Permission.
+* **Design Pattern:** Composite, Prototype.
+* **OOPS:** Inheritance for folder/file nodes.
+* **SOLID:**
+
+  * **S:** FolderNode doesn’t manage content logic.
+  * **O:** Add new Node types easily.
+  * **L:** FolderNode and FileNode replace base Node.
+  * **I:** Interfaces for read/write.
+  * **D:** Services depend on INode.
+* **Data Flow:** Create → Upload → Share.
+* **DB:** Files, permissions.
+* **Class/Interface:** INode, FileNode, FolderNode.
+* **Association:** Folder contains Nodes.
+* **Trade-offs:** Full version vs diff.
 
 ---
 
@@ -459,18 +540,25 @@ Design folders, files, sharing, versioning.
 
 ### **Question Details:**
 
-Design an online bidding system.
+Online bidding system.
 
 ### **Expected Discussion:**
 
-* **Entities:** Auction, Bid, User, Item.
-* **Design Pattern:** Observer (bid updates).
-* **OOPS:** Abstraction for bidding rules.
-* **Data Flow:** Create auction → Accept bids → Determine winner.
-* **DB:** Auctions, Bids, Users.
-* **Class/Interface:** BidService, AuctionManager.
-* **Association:** Auction *has-many* Bids.
-* **Trade-offs:** Real-time vs batch processing.
+* **Entities:** Auction, Bid, Item, User.
+* **Design Pattern:** Observer.
+* **OOPS:** Encapsulation of bidding rules.
+* **SOLID:**
+
+  * **S:** AuctionManager only manages auctions.
+  * **O:** Add new auction types.
+  * **L:** DutchAuction behaves like Auction.
+  * **I:** IBidListener etc.
+  * **D:** AuctionService depends on abstract IAuction.
+* **Data Flow:** Bid → Update → Notify.
+* **DB:** Bids, Auctions.
+* **Class/Interface:** AuctionService, IAuction.
+* **Association:** Auction has Bids.
+* **Trade-offs:** Real-time vs event-based.
 
 ---
 
@@ -478,18 +566,25 @@ Design an online bidding system.
 
 ### **Question Details:**
 
-Design multi-method payment orchestration.
+Orchestrate card/UPI/netbanking flows.
 
 ### **Expected Discussion:**
 
-* **Entities:** Payment, User, Merchant, Transaction.
-* **Design Pattern:** Strategy (payment method), Template method.
-* **OOPS:** Interface for payment processors.
-* **Data Flow:** Pay request → Processor → Confirmation.
-* **DB:** Transactions, Users, Merchants.
-* **Class/Interface:** IPaymentMethod, CardPayment, UpiPayment.
-* **Association:** Payment *uses* PaymentMethod.
-* **Trade-offs:** Orchestrator vs aggregator model.
+* **Entities:** Payment, Transaction, Merchant.
+* **Design Pattern:** Strategy, Template Method.
+* **OOPS:** Polymorphism for payment channels.
+* **SOLID:**
+
+  * **S:** Each payment method is isolated.
+  * **O:** Add PayPal, Crypto, etc.
+  * **L:** CardPayment fits IPaymentMethod.
+  * **I:** Separate interface per method.
+  * **D:** PaymentService depends on abstractions.
+* **Data Flow:** Request → Method → Bank → Confirm.
+* **DB:** Transactions, Users.
+* **Class/Interface:** IPaymentMethod, CardPayment.
+* **Association:** Payment uses method.
+* **Trade-offs:** One big orchestrator vs modular services.
 
 ---
 
@@ -497,18 +592,25 @@ Design multi-method payment orchestration.
 
 ### **Question Details:**
 
-Design an in-memory LRU cache.
+Design LRU eviction.
 
 ### **Expected Discussion:**
 
-* **Entities:** Cache, Node, DoublyLinkedList.
-* **Design Pattern:** None; custom DS.
+* **Entities:** Cache, Node, DLL.
+* **Design Pattern:** None mandatory.
 * **OOPS:** Encapsulation of eviction logic.
-* **Data Flow:** Get/Put → Move node → Evict if needed.
-* **DB:** Not required.
+* **SOLID:**
+
+  * **S:** Node only stores data; eviction separate.
+  * **O:** Extend with TTL eviction.
+  * **L:** Any cache replacement must implement ICache.
+  * **I:** Separate interface for eviction.
+  * **D:** Cache depends on IEvictionPolicy.
+* **Data Flow:** Put/Get → Update DLL → Evict.
+* **DB:** Not needed.
 * **Class/Interface:** LruCache, DllNode.
-* **Association:** Cache *has* DLL; DLL *has* Nodes.
-* **Trade-offs:** Time complexity vs memory usage.
+* **Association:** Cache has DLL.
+* **Trade-offs:** More memory vs faster access.
 
 ---
 
@@ -516,18 +618,25 @@ Design an in-memory LRU cache.
 
 ### **Question Details:**
 
-Design a multi-target logger.
+Console/File/DB logging.
 
 ### **Expected Discussion:**
 
-* **Entities:** Logger, Appender, Formatter, LogMessage.
+* **Entities:** Logger, Appender, Formatter.
 * **Design Pattern:** Chain of Responsibility, Factory.
-* **OOPS:** Interface for appenders.
-* **Data Flow:** Build message → Format → Append.
-* **DB:** Optional log store.
-* **Class/Interface:** ILogger, ConsoleAppender, FileAppender.
-* **Association:** Logger *has-many* Appenders.
-* **Trade-offs:** Sync vs async logging.
+* **OOPS:** Abstraction for appenders.
+* **SOLID:**
+
+  * **S:** Each appender writes only to its output.
+  * **O:** Add new appenders easily.
+  * **L:** FileAppender behaves like IAppender.
+  * **I:** Split interfaces per appender.
+  * **D:** Logger depends on IAppender.
+* **Data Flow:** Build log → Format → Append.
+* **DB:** Optional.
+* **Class/Interface:** ILogger, ConsoleAppender.
+* **Association:** Logger has appenders.
+* **Trade-offs:** Sync vs async.
 
 ---
 
@@ -535,18 +644,25 @@ Design a multi-target logger.
 
 ### **Question Details:**
 
-Design a chess engine LLD.
+8×8 chess with move validation.
 
 ### **Expected Discussion:**
 
-* **Entities:** Board, Piece, Move, Game.
-* **Design Pattern:** Strategy (move validation).
-* **OOPS:** Inheritance (King/Queen/Bishop).
-* **Data Flow:** Player move → Validate → Update Board.
-* **DB:** Not needed.
-* **Class/Interface:** IPiece, King, Bishop, ChessGame.
-* **Association:** Board *has-many* Pieces.
-* **Trade-offs:** Move logic complexity vs extensibility.
+* **Entities:** Piece, Board, Move, Game.
+* **Design Pattern:** Strategy.
+* **OOPS:** Inheritance for pieces.
+* **SOLID:**
+
+  * **S:** Each piece only knows its own moves.
+  * **O:** Add new piece types.
+  * **L:** Pawn replaces Piece without issues.
+  * **I:** IMoveValidator separated.
+  * **D:** Game depends on IPiece.
+* **Data Flow:** Move → Validate → Execute.
+* **DB:** Optional.
+* **Class/Interface:** IPiece, King, ChessGame.
+* **Association:** Board has Pieces.
+* **Trade-offs:** Validation complexity.
 
 ---
 
@@ -554,18 +670,25 @@ Design a chess engine LLD.
 
 ### **Question Details:**
 
-Design Swiggy/Zomato LLD flow.
+Order placement & tracking.
 
 ### **Expected Discussion:**
 
 * **Entities:** Restaurant, MenuItem, Order, DeliveryPerson.
-* **Design Pattern:** Observer (order updates), Strategy (assignment).
-* **OOPS:** Polymorphism for delivery strategies.
+* **Design Pattern:** Strategy (assignment), Observer (tracking).
+* **OOPS:** Abstraction for assignment strategies.
+* **SOLID:**
+
+  * **S:** OrderService only handles order workflow.
+  * **O:** Add new assignment algorithms.
+  * **L:** DeliveryStrategy behaves like IAssignmentStrategy.
+  * **I:** Separate driver/location services.
+  * **D:** Services depend on abstractions.
 * **Data Flow:** Browse → Order → Assign → Track → Deliver.
-* **DB:** Users, Orders, Restaurants.
-* **Class/Interface:** IAssignmentStrategy, OrderService.
-* **Association:** Restaurant *has-many* MenuItems.
-* **Trade-offs:** Real-time tracking frequency.
+* **DB:** Orders, Restaurants.
+* **Class/Interface:** OrderService, IAssignmentStrategy.
+* **Association:** Restaurant has MenuItems.
+* **Trade-offs:** Real-time accuracy vs battery usage.
 
 ---
 
@@ -573,37 +696,51 @@ Design Swiggy/Zomato LLD flow.
 
 ### **Question Details:**
 
-Design Notepad-like editor with undo-redo.
+Undo–redo mechanism.
 
 ### **Expected Discussion:**
 
 * **Entities:** Document, Command, History, Cursor.
 * **Design Pattern:** Command, Memento.
-* **OOPS:** Encapsulation of document state.
-* **Data Flow:** User action → Command execute → Store history.
-* **DB:** Optional (save file).
-* **Class/Interface:** ICommand, InsertCommand, DeleteCommand.
-* **Association:** History *has-many* Commands.
-* **Trade-offs:** Full snapshot vs delta storage.
+* **OOPS:** Encapsulation of text buffer.
+* **SOLID:**
+
+  * **S:** Command only executes action.
+  * **O:** Add new commands (Replace, Copy).
+  * **L:** All commands implement ICommand.
+  * **I:** Fine-grained command interfaces.
+  * **D:** Editor depends on ICommand.
+* **Data Flow:** Execute → Store → Undo/Redo.
+* **DB:** Optional.
+* **Class/Interface:** ICommand, InsertCommand.
+* **Association:** History has Commands.
+* **Trade-offs:** Full snapshot vs diff.
 
 ---
 
-# **19. Ride Sharing (Uber/Ola LLD)**
+# **19. Ride Sharing**
 
 ### **Question Details:**
 
-Design matching riders and drivers.
+Match rider with driver.
 
 ### **Expected Discussion:**
 
 * **Entities:** Rider, Driver, RideRequest, Trip.
-* **Design Pattern:** Strategy (matching), Observer (status update).
-* **OOPS:** Abstraction for matching algorithm.
+* **Design Pattern:** Strategy (matching), Observer (status).
+* **OOPS:** Abstraction for matching algorithms.
+* **SOLID:**
+
+  * **S:** Matcher only matches requests.
+  * **O:** Add surge-aware matching.
+  * **L:** NearestStrategy must work like IMatchingStrategy.
+  * **I:** Separate interfaces for tracking.
+  * **D:** Services depend on abstractions.
 * **Data Flow:** Request → Match → Accept → Start → End.
-* **DB:** Drivers, Trips, Requests.
-* **Class/Interface:** IMatchingStrategy, NearestMatchStrategy.
-* **Association:** Trip *has* Rider and Driver.
-* **Trade-offs:** Nearest-only vs surge-aware matching.
+* **DB:** Drivers, Trips.
+* **Class/Interface:** IMatchingStrategy, TripService.
+* **Association:** Trip has Rider & Driver.
+* **Trade-offs:** Accuracy vs latency.
 
 ---
 
@@ -611,20 +748,26 @@ Design matching riders and drivers.
 
 ### **Question Details:**
 
-Design cart operations for e-commerce.
+Manage cart items & price.
 
 ### **Expected Discussion:**
 
 * **Entities:** Cart, CartItem, Product, Discount.
-* **Design Pattern:** Strategy (discount), Decorator (promo stacking).
-* **OOPS:** Encapsulation of price calculation.
-* **Data Flow:** Add item → Recalculate price → Checkout.
-* **DB:** Products, Cart, Discounts.
-* **Class/Interface:** IDiscountStrategy, CartService.
-* **Association:** Cart *has-many* CartItems.
-* **Trade-offs:** Recalculate on every update vs lazy calculation.
+* **Design Pattern:** Strategy (discount), Decorator.
+* **OOPS:** Encapsulation of price logic.
+* **SOLID:**
+
+  * **S:** Each DiscountStrategy handles one rule.
+  * **O:** Add new discount rules without modification.
+  * **L:** All strategies must work interchangeably.
+  * **I:** Interfaces separated by discount type.
+  * **D:** Cart depends on IDiscountStrategy.
+* **Data Flow:** Add → Recalculate → Checkout.
+* **DB:** Cart, Products, Discounts.
+* **Class/Interface:** CartService, IDiscountStrategy.
+* **Association:** Cart has CartItems.
+* **Trade-offs:** Recalc on update vs on checkout.
 
 ---
 
-If you want, I can generate the **same 20 questions in a tabular format** or convert into **interview-ready PDF**.
 
